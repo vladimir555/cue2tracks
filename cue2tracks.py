@@ -108,7 +108,7 @@ else:
 
 
 # file_name_cue = file_name_cue.replace("'", "''")
-cue = executeShellCommand("cat '" + file_name_cue + "' | iconv -f '" + cue_encoding + "' -t 'utf8'")
+cue = executeShellCommand("cat \"" + file_name_cue + "\" | iconv -f '" + cue_encoding + "' -t 'utf8'")
 
 album       = ""
 artist      = ""
@@ -169,9 +169,16 @@ if not os.path.exists(tmp_dir):
 file_name_source    = os.path.abspath(file_name_source)
 
 
-file_name_image_list          = executeShellCommand("find '" + os.path.split(file_name_source)[0] + "' -iname \"*.jpg\"")
+file_name_image_list          = executeShellCommand("find \"" + os.path.split(file_name_source)[0] + "\" \\( -iname \"*.jpg\" -o -iname \"*.png\" \\)")
 print("file_name_image_list = " + str(file_name_image_list))
-os.mkdir(album_dir + "/scans")
+
+
+if len(file_name_image_list) > 0:
+    os.mkdir(album_dir + "/scans")
+else:
+    print("no scans")
+    
+    
 for file_name_image in file_name_image_list:
     file_name_image_dst = album_dir + "/scans/" + os.path.split(file_name_image)[1]
     for i in range(0, 9):
@@ -180,7 +187,7 @@ for file_name_image in file_name_image_list:
     if os.path.exists(file_name_image_dst):
         print("error copy images: '" + file_name_image_dst + "' already exists")
         exit(1) 
-    executeShellCommand("cp -v '" + file_name_image + "' '" + file_name_image_dst + "' > /dev/tty") 
+    executeShellCommand("cp -v \"" + file_name_image + "\" \"" + file_name_image_dst + "\" > /dev/tty") 
 
 
 if file_name_source[-3:] == "ape":
@@ -190,9 +197,9 @@ if file_name_source[-3:] == "ape":
     file_name_source = tmp_dir + "/" + flac
 
 
-split_command       = "cd '" + tmp_dir + "' && "
-split_command       = split_command + "cuebreakpoints '"    + file_name_cue + "' | shnsplit -o flac '" + file_name_source + "' > /dev/tty && "
-split_command       = split_command + "cuetag '"            + file_name_cue + "' `ls split-track*.flac` > /dev/tty"
+split_command       = "cd \"" + tmp_dir + "\" && "
+split_command       = split_command + "cuebreakpoints \""   + file_name_cue + "\" | shnsplit -o flac \"" + file_name_source + "\" > /dev/tty && "
+split_command       = split_command + "cuetag \""           + file_name_cue + "\" `ls split-track*.flac` > /dev/tty"
 executeShellCommand(split_command)
 
 
@@ -207,10 +214,10 @@ i = 0
 for track_name in tracks:
     i = i + 1
     track_number = str(i).rjust(2, "0")
-    executeShellCommand("lltag --yes -t '" + track_name + "' -A '" + album + "' -a '" + artist + "' -n '" + str(i) + "' '" + tmp_dir + "/split-track" + track_number + ".flac'")
+    executeShellCommand("lltag --yes -t \"" + track_name + "\" -A \"" + album + "\" -a \"" + artist + "\" -n \"" + str(i) + "\" \"" + tmp_dir + "/split-track" + track_number + ".flac\"")
     os.rename(tmp_dir + "/split-track" + track_number + ".flac", album_dir + "/" + track_number + " " + track_name + ".flac")
 
-executeShellCommand("rm -rf '" + tmp_dir + "'")
+executeShellCommand("rm -rf \"" + tmp_dir + "\"")
 
 # #!/bin/bash
 #  FILE_NAME_CUE="$1"
