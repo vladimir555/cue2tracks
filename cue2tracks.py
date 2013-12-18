@@ -22,6 +22,7 @@ def printList(name, list_):
 
 
 def executeShellCommand(command):
+    command = command.replace("$", "\\$")
     print("exec: " + command)
     result_pipe = os.popen(command)
     result_     = result_pipe.readlines()
@@ -107,7 +108,7 @@ else:
     cue_encoding = "cp1251"
 
 
-# file_name_cue = file_name_cue.replace("'", "''")
+# file_name_cue = file_name_cue.replace("$", "\\$")
 cue = executeShellCommand("cat \"" + file_name_cue + "\" | iconv -f '" + cue_encoding + "' -t 'utf8'")
 
 album       = ""
