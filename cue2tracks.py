@@ -58,6 +58,8 @@ def fileNameCUEToFileNameSource(file_name_cue):
         return source_name + ".flac"
     if os.path.isfile(source_name + ".ape"):
         return source_name + ".ape"
+    if os.path.isfile(source_name + ".wv"):
+        return source_name + ".wv"
     
     source_name         = os.path.splitext(source_name)[0]
     
@@ -65,6 +67,8 @@ def fileNameCUEToFileNameSource(file_name_cue):
         return source_name + ".flac"
     if os.path.isfile(source_name + ".ape"):
         return source_name + ".ape"
+    if os.path.isfile(source_name + ".wv"):
+        return source_name + ".wv"
     
     print("source file not found")
     exit(1)
